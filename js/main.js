@@ -64,6 +64,9 @@
 		target,
 
 		resize,
+		next,
+		prev,
+		timer,
 
 		//state
 		selectedIndex = -1,
@@ -73,7 +76,8 @@
 		previousVideo,
 		nextVideo,
 		playing = false,
-		Transition = {},
+		nextStep = 0,
+		currentStep = 1,
 
 		canvas = document.getElementById('canvas'),
 		controls = document.getElementById('controls'),
@@ -208,6 +212,37 @@
 			}
 		};
 
+		next  = debounce(function () {
+ 
+			//Transition.disable_scroll() 
+			nextStep = currentStep + 1
+			
+			console.log('scrolling down - nextItem')
+			currentStep = nextStep 
+			
+			console.log('selectedIndex: ' + selectedIndex)
+			console.log('nextStep: ' + nextStep)
+		
+			return currentStep
+			
+		}, 1000, true);
+		
+		prev  = debounce(function () {
+
+			// Transition.disable_scroll()
+			//Transition.disable_scroll() 
+			nextStep = currentStep - 1
+			
+			console.log('scrolling down - nextItem')
+			currentStep = nextStep 
+			
+			console.log('selectedIndex: ' + selectedIndex)
+			console.log('nextStep: ' + nextStep)
+		
+			return currentStep
+			
+		}, 1000, true);
+
 	function initSeriously() {
 		var key;
 		seriously = new Seriously();
@@ -280,6 +315,7 @@
 		if (playing) {
 			nextVideo.play();
 		}
+
 	}
 
 	/*
@@ -481,72 +517,43 @@
 	// canvas.addEventListener('click', togglePlay);
 	// bigbutton.addEventListener('click', togglePlay);
 
-	var body = document.querySelector('body');
-	body.addEventListener('mouseWheel', Transition.headerScroll);
-	canvas.addEventListener('mouseWheel', Transition.headerScroll);
-	bigbutton.addEventListener('mouseWheel', Transition.headerScroll);
+	// var body = document.querySelector('body');
+	// body.addEventListener('mouseWheel', Transition.headerScroll);
+	// canvas.addEventListener('mouseWheel', Transition.headerScroll);
+	// bigbutton.addEventListener('mouseWheel', Transition.headerScroll);
 
 	window.addEventListener('wheel', function(e) {
+		if (e.deltaY > 0) {
+			console.log('scrolling down');
+			document.getElementById('status').innerHTML = 'scrolling down';
+			if(timer) {
+			  window.clearTimeout(timer);
+			}
+			timer = window.setTimeout(function() {
+			 // actual code here. Your call back function.
+			next();
+			console.log( "Firing!" );
+			}, 100);
+			switchVideo(currentStep);
+
+		}
 		if (e.deltaY < 0) {
 		  console.log('scrolling up');
 		  document.getElementById('status').innerHTML = 'scrolling up';
-		  switchVideo(1)
+		  if(timer) {
+			window.clearTimeout(timer);
+		  }
+		  timer = window.setTimeout(function() {
+		   // actual code here. Your call back function.
+		  prev();
+		  console.log( "Firing!" );
+		  }, 100);
+		  
+		  switchVideo(currentStep);
+
 		}
-		if (e.deltaY > 0) {
-		  console.log('scrolling down');
-		  document.getElementById('status').innerHTML = 'scrolling down';
-		  switchVideo(0)
-		}
+		
 	  });
-
-	// Transition.headerScroll = (currentScrollY, delta, event) => {
-
-	// 	var delta = null,
-	// 	currentScrollY = false,
-	// 	event = window.event;
-		
-	// 	if ( !event ) { // if the event is not provided, we get it from the window object
-	// 		event = window.event;
-	// 	}
-	// 	if ( event.wheelDelta ) { // will work in most cases
-	// 		delta = event.wheelDelta / 60;
-	// 	} else if ( event.detail ) { // fallback for Firefox
-	// 		delta = -event.detail / 2;
-	// 	}
-	// 	if ( delta !== null) {
-			
-	// 		if (delta < 0) {
-				
-	// 			// Transition.headerUp()
-	// 			switchVideo(1)
-	// 			console.log('scroll down')
-
-	// 		} else if (delta > 0) {
-	
-	// 			// Transition.p2()
-	// 			switchVideo(1)
-	// 			console.log('scroll up')
-
-	// 		} 
-	
-	// 	}
-		
-	// }
-
-	// Transition.scrollInit = () => {
-	// 	// const body = S.Dom.body
-	// 	//S.BindMaker(this, ['Transition.headerScroll'])
-	// 	//S.scroll = new S.Scroll(Transition.headerScroll)
-	// 	// S.Listen(body, 'add', 'mouseWheel', Transition.headerScroll)
-	
-	// 	// var body = document.querySelector('body');
-    // 	window.addEventListener("mouseWheel", Transition.headerScroll, false);
-	// 	// this.scroll.on()
-	// 	// this.scroll.off()
-	// 	console.log('hello from scroll init')
-	// }
-	
-	// Transition.scrollInit();
 
 
 	/*
@@ -567,33 +574,3 @@
 	});
 }(this));
 
-// Transition.headerScroll = (currentScrollY, delta, event) => {
-
-//     var delta = null,
-//     currentScrollY = false,
-// 	event = window.event;
-	
-// 	if ( !event ) { // if the event is not provided, we get it from the window object
-//         event = window.event;
-//     }
-//     if ( event.wheelDelta ) { // will work in most cases
-//         delta = event.wheelDelta / 60;
-//     } else if ( event.detail ) { // fallback for Firefox
-//         delta = -event.detail / 2;
-//     }
-//     if ( delta !== null) {
-        
-//         if (delta < 0) {
-            
-//             // Transition.headerUp()
-
-//         } else if (delta > 0) {
-
-//             // Transition.p2()
-
-
-//         } 
-
-// 	}
-	
-// }
