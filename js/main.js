@@ -77,7 +77,7 @@
 		nextVideo,
 		playing = false,
 		nextStep = 0,
-		currentStep = 1,
+		currentStep = 0,
 
 		canvas = document.getElementById('canvas'),
 		controls = document.getElementById('controls'),
@@ -215,7 +215,12 @@
 		next  = debounce(function () {
  
 			//Transition.disable_scroll() 
-			nextStep = currentStep + 1
+			if (currentStep >= 2) {
+				
+				currentStep = 1
+			} else {
+				nextStep = currentStep + 1
+			}
 			
 			console.log('scrolling down - nextItem')
 			currentStep = nextStep 
@@ -534,7 +539,7 @@
 			next();
 			console.log( "Firing!" );
 			}, 100);
-			switchVideo(currentStep);
+			switchVideo(currentStep + 1);
 
 		}
 		if (e.deltaY < 0) {
@@ -549,7 +554,7 @@
 		  console.log( "Firing!" );
 		  }, 100);
 		  
-		  switchVideo(currentStep);
+		  switchVideo(currentStep + 1);
 
 		}
 		
